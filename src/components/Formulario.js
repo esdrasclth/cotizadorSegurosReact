@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
 import styled from '@emotion/styled'
+import {obtenerDiferenciaYear, calcularMarca, obtenerPlan} from '../helper'
 
 const Formulario = () => {
 
@@ -30,6 +31,23 @@ const Formulario = () => {
             return;
         }
         guardarError(false);
+
+        //Una base de 2000
+        let resultado = 2000;
+
+        //Obtener diferencia de años.
+        const diferencia = obtenerDiferenciaYear(year);
+        console.log(diferencia);
+
+        //Por cada año hay que restar el 3%
+        resultado -= ((diferencia * 3) * resultado) / 100;
+
+        //Agregando el porcentaje del auto (americano 15%, europeo 30%, asiatico 5%)
+        resultado = calcularMarca(marca) * resultado;
+        
+        //Incrementando el valor segun el plan seleccionado
+        const incrementoPlan = obtenerPlan(plan);
+        resultado = parseFloat(incrementoPlan * resultado).toFixed(2);
     }
 
     return (
