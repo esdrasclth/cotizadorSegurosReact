@@ -1,12 +1,45 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from '@emotion/styled'
 
 const Formulario = () => {
+
+    const [datos, guardarDatos] = useState({
+        marca: '',
+        year: '',
+        plan: ''
+    });
+    const [error, guardarError] = useState(false)
+
+    //Extraer los datos del state.
+    const {marca, year, plan} = datos;
+
+    //Leer los datos del formulario y colocarlos en el state.
+    const obtenerInformacion = e => {
+        guardarDatos({
+            ...datos,
+            [e.target.name] : e.target.value
+        })
+    }
+
+    //Cuando el usuario envia en formulario de
+    const cotizarSeguro = e => {
+        e.preventDefault();
+
+        if (marca.trim() === '' || year.trim() === '' || plan.trim() === '') {
+            guardarError(true);
+            return;
+        }
+        guardarError(false);
+    }
+
     return (
-        <form action="">
+        <form action="" onSubmit={cotizarSeguro}>
+
+            {error ? <Error>Todos los campos son obligatorios</Error> : null}
+
             <Campo>
                 <Label htmlFor="">Marca</Label>
-                <Select name="" id="">
+                <Select  name="marca" value={marca} id="" onChange={obtenerInformacion}>
                     <option value="">-- Seleccione --</option>
                     <option value="americano">Americano</option>
                     <option value="europeo">Europeo</option>
@@ -16,7 +49,7 @@ const Formulario = () => {
 
             <Campo>
                 <Label htmlFor="">Marca</Label>
-                <Select name="" id="">
+                <Select name="year" value={year} id="" onChange={obtenerInformacion}>
                     <option value="">-- Seleccione --</option>
                     <option value="2021">2021</option>
                     <option value="2020">2020</option>
@@ -33,11 +66,24 @@ const Formulario = () => {
 
             <Campo>
                 <Label htmlFor="">Plan</Label>
-                <InputRadio type="radio" name="plan" value="basico" /> Basico
-                <InputRadio type="radio" name="plan" value="completo" /> Completo
+                <InputRadio 
+                    type="radio" 
+                    name="plan" 
+                    value="basico" 
+                    checked={plan === 'basico'} 
+                    onChange={obtenerInformacion}
+                /> Basico
+
+                <InputRadio 
+                    type="radio" 
+                    name="plan" 
+                    value="completo" 
+                    checked={plan === 'completo'} 
+                    onChange={obtenerInformacion}
+                /> Completo
             </Campo>
 
-            <Boton>Cotizar</Boton>
+            <Boton type="submit">Cotizar</Boton>
         </form>
     );
 }
@@ -80,6 +126,15 @@ const Boton = styled.button`
         background-color: #26c6da;
         cursor: pointer;
     }
+`;
+
+const Error = styled.div`
+    background-color: red;
+    color: #ffffff;
+    padding: 1rem;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
 `;
 
 export default Formulario;
