@@ -78,7 +78,7 @@ const Formulario = ({ guardarResumen, guardarCargando }) => {
             </Campo>
 
             <Campo>
-                <Label htmlFor="">Marca</Label>
+                <Label htmlFor="">Año</Label>
                 <Select name="year" value={year} id="" onChange={obtenerInformacion}>
                     <option value="">-- Seleccione --</option>
                     <option value="2021">2021</option>
