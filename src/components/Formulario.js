@@ -1,8 +1,8 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import styled from '@emotion/styled'
-import {obtenerDiferenciaYear, calcularMarca, obtenerPlan} from '../helper'
+import { obtenerDiferenciaYear, calcularMarca, obtenerPlan } from '../helper'
 
-const Formulario = () => {
+const Formulario = ({ guardarResumen, guardarCargando }) => {
 
     const [datos, guardarDatos] = useState({
         marca: '',
@@ -12,13 +12,13 @@ const Formulario = () => {
     const [error, guardarError] = useState(false)
 
     //Extraer los datos del state.
-    const {marca, year, plan} = datos;
+    const { marca, year, plan } = datos;
 
     //Leer los datos del formulario y colocarlos en el state.
     const obtenerInformacion = e => {
         guardarDatos({
             ...datos,
-            [e.target.name] : e.target.value
+            [e.target.name]: e.target.value
         })
     }
 
@@ -37,17 +37,29 @@ const Formulario = () => {
 
         //Obtener diferencia de años.
         const diferencia = obtenerDiferenciaYear(year);
-        console.log(diferencia);
 
         //Por cada año hay que restar el 3%
         resultado -= ((diferencia * 3) * resultado) / 100;
 
         //Agregando el porcentaje del auto (americano 15%, europeo 30%, asiatico 5%)
         resultado = calcularMarca(marca) * resultado;
-        
+
         //Incrementando el valor segun el plan seleccionado
         const incrementoPlan = obtenerPlan(plan);
         resultado = parseFloat(incrementoPlan * resultado).toFixed(2);
+
+        guardarCargando(true);
+
+        setTimeout(() => {
+            //Elimina el spinner
+            guardarCargando(false);
+
+            //Pasa la informacion al componente principal
+            guardarResumen({
+                cotizacion: Number(resultado),
+                datos
+            });
+        }, 2000);
     }
 
     return (
@@ -57,7 +69,7 @@ const Formulario = () => {
 
             <Campo>
                 <Label htmlFor="">Marca</Label>
-                <Select  name="marca" value={marca} id="" onChange={obtenerInformacion}>
+                <Select name="marca" value={marca} id="" onChange={obtenerInformacion}>
                     <option value="">-- Seleccione --</option>
                     <option value="americano">Americano</option>
                     <option value="europeo">Europeo</option>
@@ -84,19 +96,19 @@ const Formulario = () => {
 
             <Campo>
                 <Label htmlFor="">Plan</Label>
-                <InputRadio 
-                    type="radio" 
-                    name="plan" 
-                    value="basico" 
-                    checked={plan === 'basico'} 
+                <InputRadio
+                    type="radio"
+                    name="plan"
+                    value="basico"
+                    checked={plan === 'basico'}
                     onChange={obtenerInformacion}
                 /> Basico
 
-                <InputRadio 
-                    type="radio" 
-                    name="plan" 
-                    value="completo" 
-                    checked={plan === 'completo'} 
+                <InputRadio
+                    type="radio"
+                    name="plan"
+                    value="completo"
+                    checked={plan === 'completo'}
                     onChange={obtenerInformacion}
                 /> Completo
             </Campo>
